@@ -1,0 +1,22 @@
+[Unit]
+Description=Discord music bot
+Wants=network-online.target
+After=network-online.target
+# The USB is auto-mounted by the desktop session (not fstab), so it may not be
+# there yet at boot. Keep retrying forever instead of giving up.
+StartLimitIntervalSec=0
+
+[Service]
+# Create this account and deploy the repository here, or adjust both values.
+User=musicbot
+WorkingDirectory=/opt/music-bot
+ExecStart=/usr/bin/python3 bot.py
+Environment=PYTHONUNBUFFERED=1
+# The whole bot (Python + its ffmpeg processes) may use at most 512 MB.
+# Songs are kept within this by AUDIO_MEMORY_MB (default 350) in music/sources.py.
+MemoryMax=512M
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target
